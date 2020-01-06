@@ -23,14 +23,25 @@ int symbols[] = {
 /* x */ C|D|E|G
 };
 
-int latchPin = 15;
-int clockPin = 12;
-int dataPin  = 5;
+int dataPin  = 5;  //ser
+int clockPin = 2;  //srclk
+int latchPin = 4;  //rclk
+
+
+int leftButton   = 14;
+int buzzer       = 12;
+int centerButton = 13;
+int rightButton  = 15;
+
 
 void setup() {
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(dataPin, OUTPUT);
+  pinMode(latchPin,    OUTPUT);
+  pinMode(clockPin,    OUTPUT);
+  pinMode(dataPin,     OUTPUT);
+  pinMode(buzzer,      OUTPUT);
+  pinMode(leftButton,  INPUT);
+  pinMode(centerButton,INPUT);
+  pinMode(rightButton, INPUT);
   Serial.begin(9600);
 }
 
@@ -57,7 +68,24 @@ void updateScreen(byte left, byte right){
     digitalWrite(latchPin, 1);
 }
 
+int i=0;
 void loop() {
+  if (digitalRead(leftButton)) {
+    i=(i-1)%100;
+  }
+  if (digitalRead(rightButton)) {
+    i=(i+1)%100;
+  }
+
+  if (digitalRead(centerButton)) {
+    digitalWrite(buzzer,HIGH);
+  } else {
+    digitalWrite(buzzer,LOW);
+  }
+  updateScreen(i/10,i%10);
+  delay(100);
+
+  return;
   for (int i=0;i<100;i++){
     updateScreen(i/10,i%10);
     delay(100);
